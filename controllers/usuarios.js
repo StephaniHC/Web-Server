@@ -3,10 +3,9 @@ const bcrypt = require('bcryptjs');
 
 const Usuario = require('../models/usuario');
 const Persona = require('../models/persona');
-const Trabajador = require('../models/trabajador');
-const Empleador = require('../models/empleador');
+const Civil = require('../models/civil');
 
-const { notificarUserUpdated } = require('../controllers/notificaciones');
+// const { notificarUserUpdated } = require('../controllers/notificaciones');
 const usuario = require('../models/usuario');
 
 
@@ -79,7 +78,7 @@ const actualizarUsuario = async(req, res = response) => {
         // }
 
         const usuarioActualizado = await Usuario.findByIdAndUpdate(uid, campos, { new: true });
-        await notificarUserUpdated(uid, usuario.estado, campos.estado);
+        //    await notificarUserUpdated(uid, usuario.estado, campos.estado);
         // await notificarUserUpdated(uid, 'Titulo', 'Mensaje Actulizado', 'valuess');
 
 
@@ -132,32 +131,26 @@ const crearUsuario = async(req, res = response) => {
         await persona.save();
 
         switch (role) {
-            case 'TRABAJADOR_ROLE':
-                const trabajador = new Trabajador({
+            case 'CIVIL_ROLE':
+                const civil = new Civil({
                     persona: persona.id,
                     ...req.body
                 });
-                // Guardar trabajador
+                // Guardar Civil
 
-                await trabajador.save();
+                await civil.save();
                 break;
-            case 'EMPLEADOR_ROLE':
-                const empleador = new Empleador({
-                    persona: persona.id,
-                    ...req.body
-                })
-                await empleador.save();
-                break;
+
         }
 
-        const trabajador = new Trabajador({
+        // const trabajador = new Trabajador({
 
-            persona: persona.id,
-            ...req.body
-        });
+        //     persona: persona.id,
+        //     ...req.body
+        // });
         // Guardar trabajador
 
-        await trabajador.save();
+        // await trabajador.save();
         // Generar el TOKEN - JWT
         // const token = await generarJWT(usuario.id);
         //YA NO CREA COLLECCION

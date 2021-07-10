@@ -6,5 +6,7 @@ const express = require('express');
 const app = express();
 
 app.use('/login', require('./auth'));
+app.use('/usuarios', require('./usuarios'));
+app.use('/todo', require('./busquedas'));
 
 module.exports = app;

@@ -4,6 +4,8 @@ const bcrypt = require('bcryptjs');
 
 const Usuario = require('../models/usuario');
 const Persona = require('../models/persona');
+const Civil = require('../models/civil');
+const Oficial = require('../models/oficial');
 const { generarJWT } = require('../helpers/jwt');
 const { getMenuFrontEnd } = require('../helpers/menu-frontend');
 const { esEstadoDenegadoRol } = require('../helpers/access-estado');
@@ -47,14 +49,15 @@ const login = async(req, res = response) => {
         // Generar el TOKEN - JWT
         const token = await generarJWT(usuarioDB.id);
 
-        console.log(usuarioDB);
+        const data = await getDataByRol(usuarioDB.role, personaDB.id);
+
         res.json({
             ok: true,
             token,
             // #added
             usuario: usuarioDB,
             persona: personaDB,
-
+            data: data,
             menu: getMenuFrontEnd(usuarioDB.role)
         });
 
@@ -114,11 +117,15 @@ const renewToken = async(req, res = response) => {
     try {
         const usuario = await Usuario.findById(uid);
         console.log(usuario);
+
+        const data = await getDataByRol(usuario.role, personaDB.id); // data = oficial o civil
+
         res.json({
             ok: true,
             token,
             usuario,
             persona: personaDB,
+            data,
             menu: getMenuFrontEnd(usuario.role)
         });
     } catch (error) {
@@ -130,6 +137,20 @@ const renewToken = async(req, res = response) => {
     }
 
 
+}
+
+
+const getDataByRol = async(role, id) => {
+    var dataDB;
+    switch (role) {
+        case 'CIVIL_ROLE':
+            dataDB = await Civil.findOne({ 'persona': id });
+            break;
+        case 'OFICIAL_ROLE':
+            dataDB = await Oficial.findOne({ 'persona': id });
+            break;
+    }
+    return dataDB;
 }
 
 
