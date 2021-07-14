@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const Usuario = require('../models/usuario');
 const Persona = require('../models/persona');
 const Civil = require('../models/civil');
+const Oficial = require('../models/oficial');
 
 // const { notificarUserUpdated } = require('../controllers/notificaciones');
 const usuario = require('../models/usuario');
@@ -129,10 +130,10 @@ const crearUsuario = async(req, res = response) => {
         // Guardar persona
 
         await persona.save();
-
+        var data;
         switch (role) {
             case 'CIVIL_ROLE':
-                const civil = new Civil({
+                data = new Civil({
                     persona: persona.id,
                     ...req.body
                 });
@@ -140,7 +141,12 @@ const crearUsuario = async(req, res = response) => {
 
                 await civil.save();
                 break;
-
+            case 'OFICIAL_ROLE':
+                data = new Oficial({
+                    persona: persona.id,
+                    ...req.body
+                })
+                break;
         }
 
         // const trabajador = new Trabajador({
@@ -159,7 +165,7 @@ const crearUsuario = async(req, res = response) => {
             ok: true,
             usuario,
             persona,
-            trabajador
+            data
         });
 
 
