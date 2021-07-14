@@ -5,6 +5,8 @@ const Usuario = require('../models/usuario');
 const Persona = require('../models/persona');
 const Civil = require('../models/civil');
 
+
+
 // const { notificarUserUpdated } = require('../controllers/notificaciones');
 const usuario = require('../models/usuario');
 
@@ -113,6 +115,8 @@ const crearUsuario = async(req, res = response) => {
             });
         }
 
+
+
         const usuario = new Usuario(req.body);
 
         // Encriptar contraseña
@@ -122,10 +126,12 @@ const crearUsuario = async(req, res = response) => {
 
         // Guardar usuario
         await usuario.save();
+
         const persona = new Persona({
             usuario: usuario.id,
             ...req.body
         });
+
         // Guardar persona
 
         await persona.save();
