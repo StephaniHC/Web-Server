@@ -24,7 +24,7 @@ app.post('/upload/:id/', uploadS3.array('file0', 12), function(req, res, next) {
     //controllerIA.gestureDetection(imageId, res);
 
     //Test//
-    controllerIA.verifyCard(imageId, res);
+    //controllerIA.verifyCard(imageId, res);
 
     //Test//
     //controllerIA.searchFaceCollection(id, imageId, res);
