@@ -1,119 +1,98 @@
-const { response, request } = require('express');
-
 const express = require('express');
 const app = express();
-const { uploadS3 } = require('../config_IA/multer');
+const { uploadS3 } = require('../config_S3/multer');
 const Usuario = require('../models/usuario');
-const controllerIA = require('../config_IA/face_comparision');
-
-//const controllerFace = require('../server/config/face_comparision/config');
+const { verifyCard, showFaceCollection, deleteCollection, searchFaceCollection, createCollection, addToCollection, gestureDetection } = require('../controllers/face_comparision');
 
 
-var data = {};
-var img;
-var imageId = "1626151084956.jpg";
 
-
-app.post('/upload/:id/', uploadS3.array('file0', 12), function(req, res, next) {
-
-    data.data = req.files;
+//Sube una foto a S3 y guarda la URL en el usuario o solo devuelve la URL y la KEY
+app.post('/upload/:id/:tipo/', uploadS3.array('file0', 12), function(req, res) {
+    //tipo=1 ==>Sube solamente al bucket y devuelve la URL y la KEY de la image
+    //Cualquier otro tipo ==>Sube al bucket y guarda en el usuario la URL de la imagen 
     let id = req.params.id;
-    img = data.location;
+    let tipo = req.params.tipo;
 
-    //Test//
-    //controllerIA.gestureDetection(imageId, res);
+    if (req.files.length == 0) {
+        return res.status(500).json({
+            ok: false,
+            message: "file0 is required"
+        });
+    }
 
-    //Test//
-    //controllerIA.verifyCard(imageId, res);
-
-    //Test//
-    //controllerIA.searchFaceCollection(id, imageId, res);
-
-    //Test//
-    // controllerIA.showFaceCollection(id, res);
-
-    //Test//
-    //controllerIA.addToCollection(id, imageId, res);
-
-    //Go to method to understand what it does//
-    //controllerIA.createCollection(id, res);
+    if (tipo == 1) {
+        res.status(200).json({
+            ok: true,
+            url: req.files[0].location,
+            key: req.files[0].key,
+        });
+        return;
+    }
 
     //Añade o actualiza una foto de un usuario//
-    /*Usuario.findById(id, (err, usuarioDB) => {
-         if (err) { return res.status(404).json({ ok: false, err: { message: 'User not found' } }); }
+    Usuario.findById(id, (err, usuarioDB) => {
+        if (err) { return res.status(404).json({ ok: false, err: { message: 'User not found' } }); }
 
-         //Actualizar la url a user-img//
-         usuarioDB.img = data.data[0].location;
+        //Actualizar la url a user-img//
+        usuarioDB.img = req.files[0].location;
 
-         //Guardar los valores//
-         usuarioDB.save((err, usuarioSave) => {
-             if (err) { return res.status(500).json({ ok: false, err }); }
-             res.status(200).json({ ok: true, usuarioSave });
-         });
-
-
-     });*/
-
-
-    /////OLD TEST DO NOT USE THIS////
-    /*for (let i = 0; req.files.length > i; i++) {
-        //Guardar todos los link del array en el atributo img del servicio
-        img = data.data[i].location;
-        let id = req.params.id;
-        let price = req.params.price;
-
-        Service.findById(id, (err, serviceDB) => {
-            if (err) { return res.status(404).json({ ok: false, err: { message: 'Servicio no encontrado!' } }); }
-
-            serviceDB.img.push({
-                url: data.data[i].location,
-                price: price
-            });
-
-            serviceDB.save((err, service) => {
-                if (err) { return res.status(500).json({ ok: false, err }); }
-
+        //Save values//
+        usuarioDB.save((err, usuarioSave) => {
+            if (err) { return res.status(500).json({ ok: false, err }); }
+            res.status(200).json({
+                ok: true,
+                usuarioSave,
             });
         });
 
-    } //End ciclo FOR*/
 
-    /* res.status(200).json({
-         ok: true,
-         message: 'Imagenes subidas correctamente',
-         data: data.data,
-         data_location: data.location,
-
-     });*/
-
-    /*{ //JSON response when a image is uploaded//
-        "ok": true,
-        "message": "Imagenes subidas correctamente",
-        "data": [
-            {
-                "fieldname": "file0",
-                "originalname": "IMG_20170302_171450.jpg",
-                "encoding": "7bit",
-                "mimetype": "image/jpeg",
-                "size": 795501,
-                "bucket": "images-ajota",
-                "key": "1626037235150.jpg",
-                "acl": "public-read",
-                "contentType": "application/octet-stream",
-                "contentDisposition": null,
-                "storageClass": "STANDARD",
-                "serverSideEncryption": null,
-                "metadata": {
-                    "fieldName": "file0"
-                },
-                "location": "https://images-ajota.s3.amazonaws.com/1626037235150.jpg",
-                "etag": "\"f362968d407efde0075f75783f9501ed\""
-            }
-        ]
-    }*/
+    });
 
 }); //End postImage
 
 
+//Añade una foto a una collection
+app.post('/addcollection/:collectionId/:imageId/', function(req, res) {
+
+    let collectionId = req.params.collectionId;
+    let imageId = req.params.imageId;
+    addToCollection(collectionId, imageId, res);
+
+});
+
+
+//Sube foto carnet y verifica autencidad
+app.post('/verify/:collectionId/:carnetId/', function(req, res) {
+    //Verifica que el documento sea un carnet y lo compara con un rostro de una collection
+    let collectionId = req.params.collectionId;
+    let carnetId = req.params.carnetId;
+    verifyCard(collectionId, carnetId, res);
+});
+
+
+//Analisis de gesto y verificacion de autenticidad con una collection
+app.post('/gesturedetection/:imageId/', function(req, res) {
+
+    gestureDetection(req.params.imageId, res);
+
+});
+
+
+
+
+//Test of the methods
+app.post('/test', function(req, res) {
+
+    //createCollection("123", res);
+    //deleteCollection("123", res);
+    // addToCollection("123", "1627741405597.jpg", res);
+    // searchFaceCollection("123", "1610672332056.jpg", res);
+    showFaceCollection("123", res);
+});
+
+//Luis: "1627741405597.jpg"
+//CarnetLuis:"1627741512596.jpg"
+//AnyPhoto: 1610651899973.jpg
+//Hombre sonriendo ojos cerrados:"1627755739974.jpg"
 
 module.exports = app;

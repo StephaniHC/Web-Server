@@ -6,7 +6,7 @@ const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');
 const { validarJWT, varlidarADMIN_ROLE_o_MismoUsuario } = require('../middlewares/validar-jwt');
 
-const { getUsuarios, crearUsuario, verificarKeyUnica, actualizarUsuario, borrarUsuario } = require('../controllers/usuarios');
+const { getUsuarios, crearUsuario, verificarKeyUnica, actualizarUsuario, borrarUsuario, createUser } = require('../controllers/usuarios');
 
 
 const router = Router();
@@ -57,11 +57,13 @@ router.put('/:id', [
     actualizarUsuario
 );
 
+
+
 // router.delete( '/:id',
 //     [ validarJWT, varlidarADMIN_ROLE ],
 //     borrarUsuario
 // );
 
-
+router.post('/register', createUser);
 
 module.exports = router;

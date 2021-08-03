@@ -1,9 +1,10 @@
 const { Schema, model } = require('mongoose');
 
+
 const CivilSchema = Schema({
     descripcion: {
         type: String,
-        required: true,
+        required: false,
         default: "Sin descripcion"
     },
     reputacion: {
@@ -16,11 +17,11 @@ const CivilSchema = Schema({
         ref: 'Persona',
         required: true
     },
-    // denuncias: [{
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'Denuncia',
-    //     // required: true
-    // }]
+    denuncias: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Denuncia',
+        // required: true
+    }]
 
 }, { collection: 'civil' });
 

@@ -10,12 +10,16 @@ const dbConnection = async() => {
             useNewUrlParser: true,
             useUnifiedTopology: true,
             useCreateIndex: true
+        }, (err, res) => {
+            if (err) throw err;
+            console.log('Database ONLINE!!!');
         });
-
     } catch (error) {
 
         console.log(error);
         throw new Error('Error a la hora de iniciar la DB ver logs');
+
+
     }
 
 }
