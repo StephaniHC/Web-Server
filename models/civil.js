@@ -16,11 +16,11 @@ const CivilSchema = Schema({
         ref: 'Persona',
         required: true
     },
-    // denuncias: [{
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'Denuncia',
-    //     // required: true
-    // }]
+    denuncias: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Denuncia',
+        required: false
+    }]
 
 }, { collection: 'civil' });
 
