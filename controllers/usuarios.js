@@ -1,12 +1,12 @@
-const { response } = require('express');
+const { response, request } = require('express');
 const bcrypt = require('bcryptjs');
 
 const Usuario = require('../models/usuario');
 const Persona = require('../models/persona');
 const Civil = require('../models/civil');
+// const { createCollection } = require('../controllers/face_comparision');
+
 const Oficial = require('../models/oficial');
-
-
 
 // const { notificarUserUpdated } = require('../controllers/notificaciones');
 const usuario = require('../models/usuario');
@@ -101,6 +101,81 @@ const actualizarUsuario = async(req, res = response) => {
 
 }
 
+//Create a user, person and civil
+const createUser = async(req = request, res = response) => {
+    const { password, role, email } = req.body;
+
+    try {
+        const existeEmail = await Usuario.findOne({ email });
+
+        if (existeEmail) {
+            return res.status(400).json({
+                ok: false,
+                msg: 'El correo ya está registrado',
+                existeEmail
+            });
+        }
+
+        const user = new Usuario(req.body);
+
+        // Encriptar contraseña
+        const salt = bcrypt.genSaltSync();
+        user.password = bcrypt.hashSync(password, salt);
+        user.estado = getEstadoFromRole(role);
+
+        // Save user
+        await user.save(); //end save
+
+        userId = user._id;
+
+        const persona = new Persona({
+            usuario: userId,
+            ...req.body
+        });
+
+        // Guardar persona
+        await persona.save((err, persona) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    err
+                });
+            }
+
+            //Crea una collection poniendo como nombre el ID del usuario
+            //createCollection(`${userId}`, res);
+
+            res.json({
+                ok: true,
+                persona
+            });
+        });
+
+        //Save civil
+        switch (role) {
+            case 'CIVIL_ROLE':
+                const civil = new Civil({
+                    persona: persona._id,
+                    ...req.body
+                });
+
+                await civil.save();
+                break;
+
+        }
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Error inesperado... revisar logs'
+        });
+    }
+
+
+
+};
+
 const crearUsuario = async(req, res = response) => {
 
     const { email, password, role } = req.body;
@@ -189,10 +264,10 @@ const crearUsuario = async(req, res = response) => {
 const getEstadoFromRole = (role) => {
 
     switch (role) {
-        case 'TRABAJADOR_ROLE':
-            return 'pendiente'
+        case 'CIVIL_ROLE':
+            return 'habilitado'
             break;
-        case 'EMPLEADOR_ROLE':
+        case 'POLICIA_ROLE':
             return 'habilitado'
             break;
         case 'ADMIN_ROLE':
@@ -298,5 +373,6 @@ module.exports = {
     crearUsuario,
     verificarKeyUnica,
     getUsuarios,
-    getUsuario
+    getUsuario,
+    createUser
 }

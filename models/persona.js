@@ -11,23 +11,19 @@ const PersonaSchema = Schema({
     },
     celular: {
         type: String,
-        required: true,
-        default: 'sin celular'
+        required: false,
     },
     direccion: {
         type: String,
-        required: true,
-        default: 'sin direccion'
+        required: false,
     },
     ci: {
         type: String,
-        required: true,
-        default: 'sin ci'
+        required: false,
     },
     fecha_nac: {
         type: Date,
-        required: true,
-        // default:'sin direccion'
+        required: false,
     },
     usuario: {
         type: Schema.Types.ObjectId,

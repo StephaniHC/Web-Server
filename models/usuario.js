@@ -1,16 +1,13 @@
 //modelo
 
 const { Schema, model } = require('mongoose');
-
+const uniqueValidator = require('mongoose-unique-validator');
 const UsuarioSchema = Schema({
 
-    nombre: {
-        type: String,
-        required: true
-    },
+
     email: {
         type: String,
-        required: true,
+        required: [true, 'Email is required'],
         unique: true
     },
     estado: {
@@ -20,11 +17,11 @@ const UsuarioSchema = Schema({
     role: {
         type: String,
         required: false,
-        default: 'EMPLEADOR_ROLE'
+        default: 'CIVIL_ROLE'
     },
     password: {
         type: String,
-        required: true,
+        required: [true, 'Password is required'],
     },
     img: {
         type: String
@@ -39,6 +36,6 @@ UsuarioSchema.method('toJSON', function() {
     return object;
 })
 
-
+UsuarioSchema.plugin(uniqueValidator, { message: '{PATH} have to be unique' });
 
 module.exports = model('Usuario', UsuarioSchema);

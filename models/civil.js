@@ -1,9 +1,10 @@
 const { Schema, model } = require('mongoose');
 
+
 const CivilSchema = Schema({
     descripcion: {
         type: String,
-        required: true,
+        required: false,
         default: "Sin descripcion"
     },
     reputacion: {
