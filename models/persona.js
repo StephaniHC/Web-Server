@@ -22,7 +22,7 @@ const PersonaSchema = Schema({
         required: false,
     },
     fecha_nac: {
-        type: Date,
+        type: String,
         required: false,
     },
     usuario: {

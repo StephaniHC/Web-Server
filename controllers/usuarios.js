@@ -4,12 +4,10 @@ const bcrypt = require('bcryptjs');
 const Usuario = require('../models/usuario');
 const Persona = require('../models/persona');
 const Civil = require('../models/civil');
-<<<<<<< HEAD
+const { generarJWT } = require('../helpers/jwt');
 const { createCollection } = require('../controllers/face_comparision');
 
-=======
 const Oficial = require('../models/oficial');
->>>>>>> a7694e0c9a1bcde58c0173bed3ed0ff3f1ca25ba
 
 // const { notificarUserUpdated } = require('../controllers/notificaciones');
 const usuario = require('../models/usuario');
@@ -104,6 +102,53 @@ const actualizarUsuario = async(req, res = response) => {
 
 }
 
+
+
+
+
+
+
+
+const updateFotoUser=async(req = request, res = response)=>{
+
+    const userId = req.params.id;
+    const urlKey = req.params.key;
+
+    const url=`https://images-ajota.s3.amazonaws.com/${urlKey}`;
+
+    Usuario.findById(userId, (err, usuarioDB) => {
+        if (err) { return res.status(404).json({ ok: false, err: { message: 'User not found' } }); }
+
+        //Actualizar la url a user-img//
+        usuarioDB.img = url;
+
+        //Save values//
+        usuarioDB.save((err, usuarioSave) => {
+            if (err) { return res.status(500).json({ ok: false, err }); }
+            res.status(200).json({
+                ok: true,
+                usuarioSave,
+            });
+        });
+
+
+    }); 
+
+};
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 //Create a user, person and civil
 const createUser = async(req = request, res = response) => {
     const { password, role, email } = req.body;
@@ -137,35 +182,38 @@ const createUser = async(req = request, res = response) => {
         });
 
         // Guardar persona
-        await persona.save((err, persona) => {
-            if (err) {
-                return res.status(500).json({
-                    ok: false,
-                    err
-                });
-            }
-
-            //Crea una collection poniendo como nombre el ID del usuario
-            //createCollection(`${userId}`, res);
-
-            res.json({
-                ok: true,
-                persona
-            });
-        });
+        await persona.save();
+        
 
         //Save civil
+        var data;
         switch (role) {
             case 'CIVIL_ROLE':
-                const civil = new Civil({
+                civil = new Civil({
                     persona: persona._id,
                     ...req.body
                 });
 
                 await civil.save();
                 break;
-
         }
+
+
+        //Crea una collection poniendo como nombre el ID del usuario
+         //createCollection(`${userId}`, res);
+
+        // Generar el TOKEN - JWT
+        const token = await generarJWT(user.id);
+
+        res.json({
+            ok: true,
+            usuario: user,
+            persona,
+            data: civil,
+            token
+        });
+
+
 
     } catch (error) {
         console.log(error);
@@ -267,10 +315,10 @@ const crearUsuario = async(req, res = response) => {
 const getEstadoFromRole = (role) => {
 
     switch (role) {
-        case 'TRABAJADOR_ROLE':
-            return 'pendiente'
+        case 'CIVIL_ROLE':
+            return 'habilitado'
             break;
-        case 'EMPLEADOR_ROLE':
+        case 'POLICIA_ROLE':
             return 'habilitado'
             break;
         case 'ADMIN_ROLE':
@@ -377,5 +425,6 @@ module.exports = {
     verificarKeyUnica,
     getUsuarios,
     getUsuario,
-    createUser
+    createUser,
+    updateFotoUser
 }

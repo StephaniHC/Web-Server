@@ -46,9 +46,19 @@ app.post('/upload/:id/:tipo/', uploadS3.array('file0', 12), function(req, res) {
         });
 
 
-    });
+    }); 
 
 }); //End postImage
+
+
+
+//Crea una coleccion
+app.post('/createcollection/:collectionId/', function(req, res) {
+
+    let collectionId = req.params.collectionId;
+    createCollection(collectionId, res);
+
+});
 
 
 //Añade una foto a una collection
