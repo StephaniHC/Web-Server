@@ -4,8 +4,7 @@ const bcrypt = require('bcryptjs');
 const Usuario = require('../models/usuario');
 const Persona = require('../models/persona');
 const Civil = require('../models/civil');
-const { generarJWT } = require('../helpers/jwt');
-const { createCollection } = require('../controllers/face_comparision');
+// const { createCollection } = require('../controllers/face_comparision');
 
 const Oficial = require('../models/oficial');
 
@@ -109,12 +108,12 @@ const actualizarUsuario = async(req, res = response) => {
 
 
 
-const updateFotoUser=async(req = request, res = response)=>{
+const updateFotoUser = async(req = request, res = response) => {
 
     const userId = req.params.id;
     const urlKey = req.params.key;
 
-    const url=`https://images-ajota.s3.amazonaws.com/${urlKey}`;
+    const url = `https://images-ajota.s3.amazonaws.com/${urlKey}`;
 
     Usuario.findById(userId, (err, usuarioDB) => {
         if (err) { return res.status(404).json({ ok: false, err: { message: 'User not found' } }); }
@@ -132,7 +131,7 @@ const updateFotoUser=async(req = request, res = response)=>{
         });
 
 
-    }); 
+    });
 
 };
 
@@ -183,7 +182,7 @@ const createUser = async(req = request, res = response) => {
 
         // Guardar persona
         await persona.save();
-        
+
 
         //Save civil
         var data;
@@ -200,7 +199,7 @@ const createUser = async(req = request, res = response) => {
 
 
         //Crea una collection poniendo como nombre el ID del usuario
-         //createCollection(`${userId}`, res);
+        //createCollection(`${userId}`, res);
 
         // Generar el TOKEN - JWT
         const token = await generarJWT(user.id);

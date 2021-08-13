@@ -20,7 +20,7 @@ const CivilSchema = Schema({
     denuncias: [{
         type: Schema.Types.ObjectId,
         ref: 'Denuncia',
-        // required: true
+        required: false
     }]
 
 }, { collection: 'civil' });

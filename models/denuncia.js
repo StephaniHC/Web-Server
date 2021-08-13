@@ -1,68 +1,57 @@
-const mongoose = require('mongoose');
-const Schema = mongoose.Schema;
+const { Schema, model } = require('mongoose');
 
-var multimediaSchema = Schema({
-    url: {
-        type: String,
-        required: false
-    },
-    status: {
-        type: Boolean,
-        default: true,
-        required: false
-    }
-
-});
-
-
-
-let denunciaSchema = new Schema({
+const DenunciaSchema = Schema({
     coordenadas: {
+        required: false,
         type: String,
-        unique: false,
-        required: [true, 'Coord is required']
     },
-
     fecha: {
-        type: date,
-        unique: true,
-        required: [true, 'Date is required']
+        required: false,
+        type: Date,
     },
     observacion: {
+        required: false,
         type: String,
-        required: false
     },
     estado: {
+        required: false,
         type: String,
-        required: false
     },
-
     calificacion: {
+        required: false,
         type: String,
-        required: false
     },
     descripcion: {
-        type: string,
-        required: false
-    },
-    multimedia: [multimediaSchema],
-    civil: {
-        type: Schema.Types.ObjectId,
-        ref: 'Civil',
-        required: true
-    },
-    oficial: {
-        type: Schema.Types.ObjectId,
-        ref: 'Oficial',
-        required: false
+        required: false,
+        type: String,
     },
     tipo_denuncia: {
+        required: true,
+        type: String,
+    },
+    multimedia: [{
+        required: false,
+        type: String
+    }],
+    civil: {
+        required: true,
         type: Schema.Types.ObjectId,
-        ref: 'TipoDenuncia',
-        required: true
-    }
+        ref: "Civil"
+    },
+    oficial: {
+        required: false,
+        type: Schema.Types.ObjectId,
+        ref: "Oficial"
+    },
 
-});
+}, { timestamps: true });
 
 
-module.exports = mongoose.model('Denuncia', denunciaSchema);
+DenunciaSchema.method('toJSON', function() {
+    const { __v, ...object } = this.toObject();
+    return object;
+})
+
+
+
+module.exports = model('Denuncia', DenunciaSchema);
