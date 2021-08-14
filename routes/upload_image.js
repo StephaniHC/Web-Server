@@ -7,6 +7,7 @@ const { verifyCard, showFaceCollection, deleteCollection, searchFaceCollection, 
 
 
 //Sube una foto a S3 y guarda la URL en el usuario o solo devuelve la URL y la KEY
+
 app.post('/upload/:id/:tipo/', uploadS3.array('file0', 12), function(req, res) {
     //tipo=1 ==>Sube solamente al bucket y devuelve la URL y la KEY de la image
     //Cualquier otro tipo ==>Sube al bucket y guarda en el usuario la URL de la imagen 
@@ -46,9 +47,19 @@ app.post('/upload/:id/:tipo/', uploadS3.array('file0', 12), function(req, res) {
         });
 
 
-    });
+    }); 
 
 }); //End postImage
+
+
+
+//Crea una coleccion
+app.post('/createcollection/:collectionId/', function(req, res) {
+
+    let collectionId = req.params.collectionId;
+    createCollection(collectionId, res);
+
+});
 
 
 //Añade una foto a una collection

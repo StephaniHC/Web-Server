@@ -23,12 +23,18 @@ dbConnection();
 // Directorio publico 
 app.use(express.static('public'));
 
+
+const server = require('http').createServer(app);
+module.exports.io = require('socket.io')(server);
+require('./sockets/socket');
+
+
 // Rutas
 // app.use('/api/login', require('./routes/auth'));
 
 app.use('/api', require('./routes/index'));
 
 
-app.listen(process.env.PORT, () => {
+server.listen(process.env.PORT, () => {
     console.log('Servidor corriendo en puerto ' + process.env.PORT);
 });

@@ -26,11 +26,11 @@ const OficialSchema = Schema({
         ref: 'Persona',
         required: true
     },
-    // denuncias: [{
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'Denuncia',
-    //     // required: true
-    // }]
+    denuncias: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Denuncia',
+        required: false
+    }]
 
 }, { collection: 'oficial' });
 

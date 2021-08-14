@@ -6,7 +6,7 @@ const { check } = require('express-validator');
 const { validarCampos } = require('../middlewares/validar-campos');
 const { validarJWT, varlidarADMIN_ROLE_o_MismoUsuario } = require('../middlewares/validar-jwt');
 
-const { getUsuarios, crearUsuario, verificarKeyUnica, actualizarUsuario, borrarUsuario, createUser } = require('../controllers/usuarios');
+const { getUsuarios, updateFotoUser, crearUsuario, verificarKeyUnica, actualizarUsuario, borrarUsuario, createUser } = require('../controllers/usuarios');
 
 
 const router = Router();
@@ -65,5 +65,6 @@ router.put('/:id', [
 // );
 
 router.post('/register', createUser);
+router.post('/uploadimguser/:id/:key', updateFotoUser);
 
 module.exports = router;

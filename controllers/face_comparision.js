@@ -133,7 +133,7 @@ const showFaceCollection = (id, res) => {
 
 //Verifica si el documento subido es un carnet y luego hace la comparacion con la foto de perfil
 const verifyCard = (collectionId, carnetId, res) => {
-
+ sw = true;
     //Params of the card id
     const cardParams = {
         Image: {
@@ -157,8 +157,8 @@ const verifyCard = (collectionId, carnetId, res) => {
                 response.Labels.forEach(data => {
                     var confidence = data.Confidence;
                     var name = data.Name;
-                    sw = true;
-                    if (name == "Id Cards" && confidence > 80) {
+        
+                    if (name == "Id Cards" && confidence > 50) {
                         sw = false;
                         //Luego de verificar que SI, es un documento de carnet valido, hacemos la comparacion con la foto de perfil subida anteriormente a la collection
                         searchFaceCollection(collectionId, carnetId, res);
@@ -210,11 +210,12 @@ const gestureDetection = (imageId, res) => {
         } else {
 
             response.FaceDetails.forEach(data => {
+                console.log(data);
                 let smile = data.Smile.Value;
                 let confidenceSmile = data.Smile.Confidence;
                 let eyesOpen = data.EyesOpen.Value;
                 let confidenceEyesOpen = data.EyesOpen.Confidence;
-                if (smile && confidenceSmile > 90 && eyesOpen == false && confidenceEyesOpen > 90) {
+                if (smile && confidenceSmile > 50 && eyesOpen == false && confidenceEyesOpen > 50) {
                     return res.status(200).json({
                         ok: true,
                         message: "Verification successfully!"
