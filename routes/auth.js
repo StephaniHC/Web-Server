@@ -19,8 +19,7 @@ router.post('/', [
 );
 
 router.get('/test', (req, res) => {
-    console.log('test');
-    res.send('gello');
+    res.send('hello');
 });
 
 router.get('/renew',

@@ -5,11 +5,17 @@ const uniqueValidator = require('mongoose-unique-validator');
 const UsuarioSchema = Schema({
 
 
+    nombre: {
+        type: String,
+        required: false,
+        default: "SN"
+    },
     email: {
         type: String,
         required: [true, 'Email is required'],
         unique: true
     },
+
     estado: {
         type: String,
         default: 'inhabilitado' //  disponible, inhabilitado,  habilitado trabajando

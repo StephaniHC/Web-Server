@@ -22,7 +22,7 @@ router.post('/', [
         check('apellido', 'El apellido es obligatorio').not().isEmpty(),
         check('celular', 'El Numero de celular es obligatorio').not().isEmpty(),
         check('direccion', 'La direccion es obligatorio').not().isEmpty(),
-        check('password', 'El password es obligatorio').not().isEmpty(),
+        // check('password', 'El password es obligatorio').not().isEmpty(),
         check('email', 'El email es obligatorio').isEmail(),
         validarCampos,
     ],
