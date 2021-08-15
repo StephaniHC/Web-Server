@@ -4,7 +4,7 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const { crearDenuncia, getDenunciaNotificada, getDenunciaEnProceso, atenderDenuncia, terminarDenuncia } = require('../controllers/denuncias');
+const { crearDenuncia, getDenunciaNotificada, getDenunciaEnProceso, atenderDenuncia, terminarDenuncia, getDenuncias } = require('../controllers/denuncias');
 
 
 
@@ -32,6 +32,9 @@ router.post('/proceso',
 router.post('/terminar',
     // [        check('nombre', 'El nombre es obligatorio').not().isEmpty(),],
     terminarDenuncia
+);
+router.get('/', 
+    getDenuncias
 );
 
 

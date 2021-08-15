@@ -261,20 +261,19 @@ const getDenuncias = async(req, res) => {
     console.log('req.query');
     console.log(req.query);
 
-    const [usuarios, total] = await Promise.all([
-        Usuario
-        .find(constula, 'nombre email img role estado createdAt')
+    const [denuncias, total] = await Promise.all([
+        Denuncia
+        .find(constula, 'oficial civil fecha estado calificacion')
         .skip(desde)
         .limit(entrada)
         .sort({ createdAt: sort }),
-        Usuario
-        .find(constula, 'nombre email img role estado createdAt').countDocuments()
-    ]);
-    // total = usuarios.length;
+        Denuncia
+        .find(constula, 'oficial civil fecha estado calificacion').countDocuments()
+    ]); 
 
     res.json({
         ok: true,
-        usuarios,
+        denuncias,
         total
     });
 
@@ -342,5 +341,6 @@ module.exports = {
     getDenunciaNotificada,
     atenderDenuncia,
     getDenunciaEnProceso,
-    terminarDenuncia
+    terminarDenuncia,
+    getDenuncias
 }
