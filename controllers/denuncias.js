@@ -258,8 +258,6 @@ const getDenuncias = async(req, res) => {
     entrada = Number(entrada) || 5;
     sort = Number(sort) || 1;
 
-    console.log('req.query');
-    console.log(req.query);
 
     const [usuarios, total] = await Promise.all([
         Usuario
@@ -314,7 +312,6 @@ const getUsuario = async(req, res) => {
 
 
     // var role = req.role;
-    console.log('role');
     // console.log(role);
     const desde = Number(req.query.desde) || 0;
     const entrada = Number(req.query.entrada) || 5;

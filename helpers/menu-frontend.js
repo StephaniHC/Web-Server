@@ -6,9 +6,6 @@ const getMenuFrontEnd = (role = 'USER_ROLE') => {
             submenu: [
                 { titulo: 'Main', url: '/' },
                 { titulo: 'Gráficas', url: 'grafica1' },
-                // { titulo: 'rxjs', url: 'rxjs' },
-                // { titulo: 'Promesas', url: 'promesas' },
-                // { titulo: 'ProgressBar', url: 'progress' },
             ]
         },
 
@@ -16,12 +13,7 @@ const getMenuFrontEnd = (role = 'USER_ROLE') => {
             titulo: 'Mantenimientos',
             icono: 'mdi mdi-folder-lock-open',
             submenu: [
-                // { titulo: 'Usuarios', url: 'usuarios' },
-                // { titulo: 'Hospitales', url: 'hospitales' },
-                // { titulo: 'Médicos', url: 'medicos' },
-                { titulo: 'Fotografos', url: 'fotografos' },
-                { titulo: 'Estudios', url: 'estudios' },
-                { titulo: 'Eventos', url: 'eventos' },
+
             ]
         },
     ];

@@ -19,6 +19,8 @@ const login = async(req, res = response) => {
         const usuarioDB = await Usuario.findOne({ 'email': email });
 
         if (!usuarioDB) {
+            console.log('encontrado');
+
             return res.status(404).json({
                 ok: false,
                 msg: 'Email no encontrado'
@@ -27,8 +29,6 @@ const login = async(req, res = response) => {
         const personaDB = await Persona.findOne({ 'usuario': usuarioDB.id });
 
         if (esEstadoDenegadoRol(usuarioDB.estado)) {
-            console.log('Usuario no disponible  temporalmente');
-            console.log(usuarioDB);
             return res.status(400).json({
                 ok: false,
                 msg: 'Usuario no disponible temporalmente'
@@ -40,6 +40,7 @@ const login = async(req, res = response) => {
         // Verificar contraseña
         const validPassword = bcrypt.compareSync(password, usuarioDB.password);
         if (!validPassword) {
+            console.log('contra no');
             return res.status(400).json({
                 ok: false,
                 msg: 'Contraseña no válida'
@@ -50,6 +51,7 @@ const login = async(req, res = response) => {
         const token = await generarJWT(usuarioDB.id);
 
         const data = await getDataByRol(usuarioDB.role, personaDB.id);
+        console.log('ok');
 
         res.json({
             ok: true,
@@ -102,7 +104,6 @@ const renewToken2 = async(req, res = response) => {
 const renewToken = async(req, res = response) => {
 
     const uid = req.uid;
-    console.log(uid);
     // Generar el TOKEN - JWT
     const token = await generarJWT(uid);
 
@@ -116,7 +117,6 @@ const renewToken = async(req, res = response) => {
     }
     try {
         const usuario = await Usuario.findById(uid);
-        console.log(usuario);
 
         const data = await getDataByRol(usuario.role, personaDB.id); // data = oficial o civil
 

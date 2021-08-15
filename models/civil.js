@@ -32,5 +32,4 @@ CivilSchema.method('toJSON', function() {
 })
 
 
-
 module.exports = model('Civil', CivilSchema);

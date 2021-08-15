@@ -26,8 +26,6 @@ const rekognition = new AWS.Rekognition();
 io.on('connection', (client) => {
 
     const [valido, uid] = comprobarJWT(client.handshake.headers['x-token'])
-    console.log("valido", valido);
-    console.log("UID", uid);
     if (!valido) {
         return client.disconnect();
     }
