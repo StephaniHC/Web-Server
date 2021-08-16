@@ -27,7 +27,7 @@ class Policias {
         this.policias.set(idCliente, h3Index);
         //actulizar policias index
         this.policiasIndexados.agregar(h3Index, idCliente);
-        console.log(this.policiasIndexados);
+        // console.log(this.policiasIndexados);
     };
 
     desconectar(idCliente) {

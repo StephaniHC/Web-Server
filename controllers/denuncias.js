@@ -292,20 +292,19 @@ const getDenuncias = async(req, res) => {
     sort = Number(sort) || 1;
 
 
-    const [usuarios, total] = await Promise.all([
-        Usuario
-        .find(constula, 'nombre email img role estado createdAt')
+    const [denuncias, total] = await Promise.all([
+        Denuncia
+        .find(constula, 'observacion tipo_denuncia fecha estado calificacion')
         .skip(desde)
         .limit(entrada)
         .sort({ createdAt: sort }),
-        Usuario
-        .find(constula, 'nombre email img role estado createdAt').countDocuments()
+        Denuncia
+        .find(constula, 'observacion tipo_denuncia fecha estado calificacion').countDocuments()
     ]);
-    // total = usuarios.length;
 
     res.json({
         ok: true,
-        usuarios,
+        denuncias,
         total
     });
 
@@ -367,6 +366,49 @@ const getUsuario = async(req, res) => {
 
 }
 
+const getHistorialDenuncias = async(req, res) => {
+    let from = Number(req.query.from) || 0;
+    let id = req.params.id;
+
+
+    try {
+
+
+        Denuncia.find({ civil: id, 'estado': 'terminado' })
+            .skip(from)
+            .limit(5)
+            .populate('oficial')
+            .exec((err, denuncias) => {
+                if (err) {
+                    return res.status(500).json({
+                        ok: false,
+                        err
+                    });
+                }
+
+                res.json({
+                    ok: true,
+                    denuncias
+                });
+            });
+
+
+
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Error inesperado'
+        })
+    }
+}
+
+
+
+
+
 module.exports = {
     crearDenuncia,
     getDenunciaNotificada,
@@ -374,5 +416,7 @@ module.exports = {
     getDenunciaEnProceso,
     terminarDenuncia,
     getDenunciaEnProcesoCivil,
-    getDenuncia
+    getDenuncia,
+    getHistorialDenuncias,
+    getDenuncias
 }
