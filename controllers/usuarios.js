@@ -4,6 +4,7 @@ const bcrypt = require('bcryptjs');
 const Usuario = require('../models/usuario');
 const Persona = require('../models/persona');
 const Civil = require('../models/civil');
+const {generarJWT} = require('../helpers/jwt');
 // const { createCollection } = require('../controllers/face_comparision');
 
 const Oficial = require('../models/oficial');

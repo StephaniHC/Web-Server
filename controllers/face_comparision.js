@@ -250,3 +250,7 @@ module.exports = {
     gestureDetection
 
 };
+
+
+
+// https://images-ajota.s3.amazonaws.com/1628916473658.jpg

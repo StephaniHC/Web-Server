@@ -337,10 +337,54 @@ const getUsuario = async(req, res) => {
 
 }
 
+const getHistorialDenuncias = async(req, res) => {
+    let from = Number(req.query.from) || 0;
+    let id = req.params.id;
+
+
+    try {
+
+
+        Denuncia.find({ civil: id, 'estado': 'terminado' })
+            .skip(from)
+            .limit(5)
+            .populate('oficial')
+            .exec((err, denuncias) => {
+                if (err) {
+                    return res.status(500).json({
+                        ok: false,
+                        err
+                    });
+                }
+
+                res.json({
+                    ok: true,
+                    denuncias
+                });
+            });
+
+
+
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Error inesperado'
+        })
+    }
+}
+
+
+
+
+
 module.exports = {
     crearDenuncia,
     getDenunciaNotificada,
     atenderDenuncia,
     getDenunciaEnProceso,
-    terminarDenuncia
+    terminarDenuncia,
+    getHistorialDenuncias
 }
