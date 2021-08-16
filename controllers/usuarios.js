@@ -281,8 +281,6 @@ const crearUsuario = async(req, res = response) => {
         // Guardar persona
 
         await persona.save();
-        console.log(persona.id);
-        console.log(role);
 
         var data;
         switch (role) {

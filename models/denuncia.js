@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose');
 
 const DenunciaSchema = Schema({
     coordenadas: {
-        required: false,
+        required: true,
         type: String,
     },
     fecha: {

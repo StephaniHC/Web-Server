@@ -29,17 +29,15 @@ const retornaImagen = (req, res = response) => {
 }
 
 
-async function cargarArchivo(id, tipo, dir, files) {
+async function cargarArchivo(files) {
 
     var auxFiles = [];
     if (Array.isArray(files)) {
         auxFiles = files;
 
     } else {
-        auxFiles = [files]
-
+        auxFiles = [files];
     }
-
     var nombreArchivos = [];
     var promises = [];
     for (const file of auxFiles) {
@@ -57,26 +55,17 @@ async function cargarArchivo(id, tipo, dir, files) {
         // Generar el nombre del archivo
         const nombreArchivo = `${ uuidv4() }.${ extensionArchivo }`;
 
-        var path = `uploads`;
-
-        switch (tipo) {
-
-            case ('usuarios'):
-                path += `/${ tipo }/${ id }/${ dir }`;
-                break
-        }
-
         // agregar nombre del archivo
-        path += `/${ nombreArchivo }`;
+        var path = `${ nombreArchivo }`;
 
 
         promises.push(uploadS3(path, file.data));
-        await Promise.all(promises).then(() => {
-            agregarImagen(tipo, dir, id, nombreArchivo)
-            nombreArchivos.push(nombreArchivo);
-        });
+
 
     };
+    await Promise.all(promises).then((url) => {
+        nombreArchivos = url;
+    });
 
     return nombreArchivos;
 }
@@ -198,7 +187,6 @@ const fileUploadS3 = async(req, res) => {
     const tipo = req.params.tipo;
     const id = req.params.id;
 
-    console.log(tipo, id);
     const tiposValidos = ['document', 'usuarios'];
     if (!tiposValidos.includes(tipo)) {
         return res.status(400).json({
@@ -255,11 +243,32 @@ const fileUploadS3 = async(req, res) => {
         });
     }
 }
+const filesUploadS3 = async(req, res) => {
+
+
+    // Mover la imagen
+    try {
+        // const url = await uploadS3(path, file.data);
+        const url = await cargarArchivo(req.files.imagen);
+        return res.json({
+            ok: true,
+            msg: 'Archivo subido',
+            url: url
+        });
+
+    } catch (error) {
+        return res.status(500).json({
+            ok: false,
+            msg: error
+        });
+    }
+}
 
 
 module.exports = {
     fileUpload,
     fileUploadS3,
+    filesUploadS3,
     fileUploadS3LC,
     retornaImagen
 }

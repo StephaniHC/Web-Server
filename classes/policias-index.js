@@ -25,7 +25,7 @@ class PoliciasIndex {
         var nivel = 0;
         var poligonos = gethexRing(h3Index, nivel)
 
-        while (clientes.length <= cantidad && nivel < 10) {
+        while (clientes.length <= cantidad && nivel <= 20) {
             poligonos.forEach(h3Idx => {
                 let auxCliente = this.obtenerPoliciasPorHexagono(h3Idx);
                 if (auxCliente.length > 0) {

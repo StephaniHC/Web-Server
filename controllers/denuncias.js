@@ -36,10 +36,10 @@ const crearDenuncia = async(req, res = response) => {
 
             // dispar la notificacion
             const [lat, lon] = req.body.coordenadas.split(',');
-            console.log(lat, lon);
+            // console.log(lat, lon);
 
-            console.log(policias.buscar(lat, lon));
-            console.log(policias.size());
+            // console.log(policias.buscar(lat, lon));
+            // console.log(policias.size());
 
             notificarDenuncia(policias.buscar(lat, lon), denuncia.id);
 
@@ -190,8 +190,6 @@ const getDenunciaEnProceso = async(req, res) => {
             });
         }
 
-
-
         const civilDB = await Civil.findById(denunciaDB.civil);
         const personaDB = await Persona.findById(civilDB.persona);
         const usuarioDB = await Usuario.findById(personaDB.usuario);
@@ -214,16 +212,52 @@ const getDenunciaEnProceso = async(req, res) => {
     }
 }
 
+const getDenunciaEnProcesoCivil = async(req, res) => {
+    var { civil } = req.body;
+    try {
+        const denunciaDB = await Denuncia.findOne({ 'civil': civil, 'estado': 'enproceso', })
+
+        if (!denunciaDB) {
+            return res.status(404).json({
+                ok: false,
+                msg: 'No existe una denuncia con ese id'
+            });
+        }
+
+        const oficialDB = await Oficial.findById(denunciaDB.oficial);
+        const personaDB = await Persona.findById(oficialDB.persona);
+        const usuarioDB = await Usuario.findById(personaDB.usuario);
+
+
+
+        res.json({
+            ok: true,
+
+            denuncia: denunciaDB,
+            persona: personaDB,
+            usuario: usuarioDB,
+            oficial: oficialDB
+        });
+
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            ok: false,
+            msg: 'Error inesperado'
+        })
+    }
+}
+
 
 
 
 const getDenuncia = async(req, res) => {
-    var { denuncia } = req.query;
-
+    var denuncia = req.params.denuncia;
     try {
 
         const denunciaDB = await Denuncia.findById(denuncia);
-
+        console.log(denuncia);
         if (!denunciaDB) {
             return res.status(404).json({
                 ok: false,
@@ -235,7 +269,6 @@ const getDenuncia = async(req, res) => {
         res.json({
             ok: true,
             denuncia: denunciaDB
-
         });
 
 
@@ -339,5 +372,7 @@ module.exports = {
     getDenunciaNotificada,
     atenderDenuncia,
     getDenunciaEnProceso,
-    terminarDenuncia
+    terminarDenuncia,
+    getDenunciaEnProcesoCivil,
+    getDenuncia
 }

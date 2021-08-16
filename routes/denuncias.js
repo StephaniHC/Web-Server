@@ -4,7 +4,7 @@
 const { Router } = require('express');
 const { check } = require('express-validator');
 
-const { crearDenuncia, getDenunciaNotificada, getDenunciaEnProceso, atenderDenuncia, terminarDenuncia } = require('../controllers/denuncias');
+const { getDenuncia, crearDenuncia, getDenunciaEnProcesoCivil, getDenunciaNotificada, getDenunciaEnProceso, atenderDenuncia, terminarDenuncia } = require('../controllers/denuncias');
 
 
 
@@ -29,10 +29,18 @@ router.post('/proceso',
     // [        check('nombre', 'El nombre es obligatorio').not().isEmpty(),],
     getDenunciaEnProceso
 );
+router.post('/procesocivil',
+    // [        check('nombre', 'El nombre es obligatorio').not().isEmpty(),],
+    getDenunciaEnProcesoCivil
+);
 router.post('/terminar',
     // [        check('nombre', 'El nombre es obligatorio').not().isEmpty(),],
     terminarDenuncia
 );
 
+router.get('/:denuncia',
+    // [        check('nombre', 'El nombre es obligatorio').not().isEmpty(),],
+    getDenuncia
+);
 
 module.exports = router;

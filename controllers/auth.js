@@ -19,7 +19,6 @@ const login = async(req, res = response) => {
         const usuarioDB = await Usuario.findOne({ 'email': email });
 
         if (!usuarioDB) {
-            console.log('encontrado');
 
             return res.status(404).json({
                 ok: false,
@@ -40,7 +39,6 @@ const login = async(req, res = response) => {
         // Verificar contraseña
         const validPassword = bcrypt.compareSync(password, usuarioDB.password);
         if (!validPassword) {
-            console.log('contra no');
             return res.status(400).json({
                 ok: false,
                 msg: 'Contraseña no válida'
@@ -51,7 +49,6 @@ const login = async(req, res = response) => {
         const token = await generarJWT(usuarioDB.id);
 
         const data = await getDataByRol(usuarioDB.role, personaDB.id);
-        console.log('ok');
 
         res.json({
             ok: true,
