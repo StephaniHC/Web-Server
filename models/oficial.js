@@ -29,7 +29,8 @@ const OficialSchema = Schema({
     denuncias: [{
         type: Schema.Types.ObjectId,
         ref: 'Denuncia',
-        required: false
+        required: false,
+        default: []
     }]
 
 }, { collection: 'oficial' });

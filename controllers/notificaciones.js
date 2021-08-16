@@ -77,24 +77,20 @@ const pushnotificacion = async(data, to) => {
             },
             data: JSON.stringify(body),
         })
-        .then(response => console.log('response Ok'))
+        .then(response => {})
         .catch((error) => {
             console.error('Error:', error);
         });
 }
 const borrarTokenFCM = async(req, res) => {
     const uid = req.uid;
-    console.log(uid);
     const tokenFCM = req.body.tokenFCM;
-    console.log([tokenFCM]);
-    console.log('tokenFCM');
-    console.log(tokenFCM);
+
 
     // const notificacion = Notificacion.findOne({ 'usuario': uid });
     try {
 
         // if (!notificacion) {
-        console.log('find and delete token');
         await Notificacion.findOneAndUpdate({ 'usuario': uid }, { $pull: { tokens: tokenFCM } }, { new: true });
         // }
 
@@ -114,20 +110,15 @@ const borrarTokenFCM = async(req, res) => {
 const guardarTokenFCM = async(req, res) => {
     const uid = req.uid;
     const tokenFCM = req.body.tokenFCM;
-    console.log('tokenFCM');
-    console.log([tokenFCM]);
-    console.log('uid');
-    console.log(uid);
+
 
     // await getTokensFromUID(uid);
     // await notificar(uid, 'Titulo', 'Mensaje', 'value');
 
     const notificacion = await Notificacion.findOne({ 'usuario': uid });
     try {
-        // console.log('notificacion');
-        // console.log(notificacion);
+
         if (!notificacion) {
-            console.log('nuevo creado');
 
             const nuevaNotificacion = new Notificacion({
                 usuario: uid,
@@ -135,7 +126,6 @@ const guardarTokenFCM = async(req, res) => {
             });
             await nuevaNotificacion.save();
         } else {
-            console.log('find and update');
             //nin  verificar que no exista ese token en el array
             await Notificacion.findOneAndUpdate({ 'usuario': uid, tokens: { $nin: tokenFCM } }, { $push: { tokens: tokenFCM } }, { new: true });
         }
@@ -164,7 +154,6 @@ const guardarTokenFCMByEmail = async(req, res) => {
     try {
 
         if (!notificacion) {
-            console.log('nuevo creado');
 
             const nuevaNotificacion = new Notificacion({
                 usuario: usuario.id,
@@ -172,7 +161,6 @@ const guardarTokenFCMByEmail = async(req, res) => {
             });
             await nuevaNotificacion.save();
         } else {
-            console.log('find and update');
             await Notificacion.findOneAndUpdate({ 'usuario': usuario.id }, { $push: { tokens: tokenFCM } }, { new: true });
         }
 

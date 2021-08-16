@@ -20,7 +20,7 @@ class PoliciasIndex {
         // 
     buscar(lat, lon) {
         var clientes = [];
-        const cantidad = 2;
+        const cantidad = 2; // ccantidad de clientes que quiero encontrar
         const h3Index = getH3Index(lat, lon);
         var nivel = 0;
         var poligonos = gethexRing(h3Index, nivel)

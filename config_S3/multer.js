@@ -19,6 +19,7 @@ exports.uploadS3 = multer({
         bucket: 'images-ajota',
         acl: 'public-read',
         metadata: function(req, file, cb) {
+            console.log(file.fieldname);
             cb(null, { fieldName: file.fieldname });
         },
         key: function(req, file, cb) {

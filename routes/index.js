@@ -10,6 +10,7 @@ app.use('/usuarios', require('./usuarios'));
 app.use('/todo', require('./busquedas'));
 app.use(require('./upload_image'));
 app.use('/notificacion', require('./notificacion'));
+app.use('/uploads', require('./uploads'));
 app.use('/denuncias', require('./denuncias'));
 
 module.exports = app;

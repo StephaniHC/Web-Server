@@ -1,5 +1,7 @@
 const { response, request } = require('express');
 const bcrypt = require('bcryptjs');
+const { generarJWT } = require('../helpers/jwt');
+
 
 const Usuario = require('../models/usuario');
 const Persona = require('../models/persona');
@@ -10,7 +12,7 @@ const {generarJWT} = require('../helpers/jwt');
 const Oficial = require('../models/oficial');
 
 // const { notificarUserUpdated } = require('../controllers/notificaciones');
-const usuario = require('../models/usuario');
+const { fileUploadS3LC } = require('./uploads');
 
 
 const verificarKeyUnica = async(req, res) => {
@@ -228,8 +230,14 @@ const createUser = async(req = request, res = response) => {
 };
 
 const crearUsuario = async(req, res = response) => {
+    const { email, role } = req.body;
+    var password = req.body.password;
 
-    const { email, password, role } = req.body;
+    if (password == "") {
+        password = req.body.ci;
+        req.body.password = password;
+    }
+
 
     try {
 
@@ -246,10 +254,22 @@ const crearUsuario = async(req, res = response) => {
 
         const usuario = new Usuario(req.body);
 
+
         // Encriptar contraseña
         const salt = bcrypt.genSaltSync();
         usuario.password = bcrypt.hashSync(password, salt);
         usuario.estado = getEstadoFromRole(role);
+
+
+        // // guadar Imagen
+        // fileUploadS3LC(req.files).then((data) => {
+        //     if (data.ok) {
+        //         usuario.img = data.url;
+        //     }
+        //     console.log(data.msg);
+        // });
+
+
 
         // Guardar usuario
         await usuario.save();
@@ -262,6 +282,9 @@ const crearUsuario = async(req, res = response) => {
         // Guardar persona
 
         await persona.save();
+        console.log(persona.id);
+        console.log(role);
+
         var data;
         switch (role) {
             case 'CIVIL_ROLE':
@@ -271,16 +294,18 @@ const crearUsuario = async(req, res = response) => {
                 });
                 // Guardar Civil
 
-                await civil.save();
                 break;
             case 'OFICIAL_ROLE':
                 data = new Oficial({
                     persona: persona.id,
                     ...req.body
+
                 })
                 break;
         }
+        await data.save();
 
+        console.log(persona.id);
         // const trabajador = new Trabajador({
 
         //     persona: persona.id,
@@ -318,7 +343,7 @@ const getEstadoFromRole = (role) => {
         case 'CIVIL_ROLE':
             return 'habilitado'
             break;
-        case 'POLICIA_ROLE':
+        case 'OFICIAL_ROLE':
             return 'habilitado'
             break;
         case 'ADMIN_ROLE':
@@ -340,8 +365,7 @@ const getUsuarios = async(req, res) => {
     entrada = Number(entrada) || 5;
     sort = Number(sort) || 1;
 
-    console.log('req.query');
-    console.log(req.query);
+
 
     const [usuarios, total] = await Promise.all([
         Usuario
@@ -352,7 +376,7 @@ const getUsuarios = async(req, res) => {
         Usuario
         .find(constula, 'nombre email img role estado createdAt').countDocuments()
     ]);
-    // total = usuarios.length;
+
 
     res.json({
         ok: true,
@@ -396,7 +420,6 @@ const getUsuario = async(req, res) => {
 
 
     // var role = req.role;
-    console.log('role');
     // console.log(role);
     const desde = Number(req.query.desde) || 0;
     const entrada = Number(req.query.entrada) || 5;
