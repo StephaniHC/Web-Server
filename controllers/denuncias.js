@@ -261,12 +261,12 @@ const getDenuncias = async(req, res) => {
 
     const [denuncias, total] = await Promise.all([
         Denuncia
-        .find(constula, 'oficial civil fecha estado calificacion')
+        .find(constula, 'observacion tipo_denuncia fecha estado calificacion')
         .skip(desde)
         .limit(entrada)
         .sort({ createdAt: sort }),
         Denuncia
-        .find(constula, 'oficial civil fecha estado calificacion').countDocuments()
+        .find(constula, 'observacion tipo_denuncia fecha estado calificacion').countDocuments()
     ]); 
 
     res.json({

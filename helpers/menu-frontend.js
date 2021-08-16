@@ -4,8 +4,7 @@ const getMenuFrontEnd = (role = 'USER_ROLE') => {
             titulo: 'Dashboard',
             icono: 'mdi mdi-gauge',
             submenu: [
-                { titulo: 'Main', url: '/' },
-                { titulo: 'Gráficas', url: 'grafica1' },
+                { titulo: 'Main', url: '/' }, 
             ]
         },
 
